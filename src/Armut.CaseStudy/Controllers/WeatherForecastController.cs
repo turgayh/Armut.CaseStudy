@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +25,11 @@ namespace Armut.CaseStudy.Controllers
             _logger = logger;
         }
 
+
+
         [HttpGet]
+        [Authorize]
+
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
@@ -34,6 +40,15 @@ namespace Armut.CaseStudy.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("token")]
+        public async Task<IEnumerable<string>> GetToken()
+        {
+
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            return new string[] { accessToken };
         }
     }
 }

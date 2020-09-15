@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    restart: always
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo_net
+
+  stock.webapi:
+    image: stockwebapi
+    build:
+      context: .
+      dockerfile: src/Armut.CaseStudy/Dockerfile
+    ports:
+      - "52807:80"
+    networks:
+      - mongo_net
+    depends_on:
+      - mongo
+
+
+
+networks:
+  mongo_net:
+    driver: bridge
