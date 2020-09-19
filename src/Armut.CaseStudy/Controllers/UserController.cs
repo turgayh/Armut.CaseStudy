@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Operation.Helper;
+using Armut.CaseStudy.Operation.UserServices;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,47 +16,25 @@ namespace Armut.CaseStudy.Controllers
 
     public class UserController : ControllerBase
     {
-        private readonly string TokenExpiry;
-        private readonly string Audience;
-        private readonly string Issuer;
-        private readonly string SecretKey;
+        private readonly IUserService userService;
 
-        public UserController(IJwtToken jwtToken)
+        public UserController(IUserService userService)
         {
-             TokenExpiry = jwtToken.TokenExpiry;
-             Audience = jwtToken.Audience;
-             Issuer = jwtToken.Issuer;
-             SecretKey = jwtToken.SecretKey;
+            this.userService = userService;
         }
 
-        private string BuildJWTToken()
-        {
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var issuer = Issuer;
-            var audience = Audience;
-            var jwtValidity = DateTime.Now.AddMinutes(Convert.ToDouble(TokenExpiry));
-
-            var token = new JwtSecurityToken(issuer,
-              audience,
-              expires: jwtValidity,
-              signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
 
 
         [AllowAnonymous]
-        [HttpPost]
-        public IActionResult CreateToken([FromBody] LoginModel login)
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginModel login)
         {
             if (login == null) return Unauthorized();
             string tokenString = string.Empty;
-            bool validUser = Authenticate(login);
+            bool validUser = userService.Authenticate(login);
             if (validUser)
             {
-                tokenString = BuildJWTToken();
+                tokenString = userService.BuildJWTToken();
             }
             else
             {
@@ -68,22 +43,16 @@ namespace Armut.CaseStudy.Controllers
             return Ok(new { Token = tokenString });
         }
 
-        private bool Authenticate(LoginModel login)
+        [AllowAnonymous]
+        [HttpPost("signup")]
+        public IActionResult Singup([FromBody] SingupModel singup)
         {
-            bool validUser = false;
+            if (singup == null) return NotFound();
 
-            if (login.Username == "hakan" && login.Password == "1234")
-            {
-                validUser = true;
-            }
-            return validUser;
+            return Ok(userService.Singup(singup));
         }
 
-        [Authorize]
-        [HttpGet("users")]
-        public string Get()
-        {
-            return "selam yisen!!1";
-        }
+
+
     }
 }

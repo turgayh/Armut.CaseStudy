@@ -5,11 +5,10 @@ using System.Text;
 
 namespace Armut.CaseStudy.Model
 {
-    public class User:UserBase
+    public class User : UserBase
     {
+
         public string Name { get; set; }
-        public List<string> BlockedList { get; set; }
-
-
+        public List<string> BlockedList { get; set; } = new List<string>();
     }
 }
