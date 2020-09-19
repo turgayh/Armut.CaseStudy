@@ -9,7 +9,9 @@ namespace Armut.CaseStudy.Operation.UserServices
         public bool Authenticate(LoginModel login);
         public ServiceResponse<string> Login(LoginModel login);
         public ServiceResponse<User> Signup(SingupModel singup);
+        public ServiceResponse<string> GetUserIdByUsername(string username);
         public string BuildJWTToken();
+
 
     }
 }

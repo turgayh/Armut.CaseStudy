@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Armut.CaseStudy.Operation.Helper;
+using Armut.CaseStudy.Operation.MessageService;
 using Armut.CaseStudy.Operation.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +42,8 @@ namespace Armut.CaseStudy
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IMessageService, MessageService>();
+
 
             ///JWT auth settings
             services.Configure<JwtToken>(
