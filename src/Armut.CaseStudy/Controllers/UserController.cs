@@ -1,7 +1,9 @@
-﻿using Armut.CaseStudy.Model;
+﻿using System;
+using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Operation.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armut.CaseStudy.Controllers
 {
@@ -11,11 +13,13 @@ namespace Armut.CaseStudy.Controllers
 
     public class UserController : ControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            this.userService = userService;
+            _userService = userService;
+            _logger = logger;
         }
 
 
@@ -23,8 +27,9 @@ namespace Armut.CaseStudy.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel login)
         {
+            _logger.LogInformation("UserController-Login Index executed at {date}", DateTime.UtcNow);
             if (login == null) return Unauthorized();
-            var response = userService.Login(login);
+            var response = _userService.Login(login);
             if (!response.Success)
                 return Unauthorized();
             return Ok(response);
@@ -33,11 +38,13 @@ namespace Armut.CaseStudy.Controllers
 
         [AllowAnonymous]
         [HttpPost("signup")]
-        public IActionResult Singup([FromBody] SingupModel singup)
+        public IActionResult Signup([FromBody] SingupModel singup)
         {
+            _logger.LogInformation("UserController-Signup Index executed at {date}", DateTime.UtcNow);
+
             if (singup == null) return NotFound();
 
-            return Ok(userService.Signup(singup));
+            return Ok(_userService.Signup(singup));
         }
 
 
