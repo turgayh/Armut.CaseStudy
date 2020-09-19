@@ -1,12 +1,7 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Armut.CaseStudy.Model;
-using Armut.CaseStudy.Operation.Helper;
+﻿using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Operation.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Armut.CaseStudy.Controllers
 {
@@ -24,24 +19,17 @@ namespace Armut.CaseStudy.Controllers
         }
 
 
-
         [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel login)
         {
             if (login == null) return Unauthorized();
-            string tokenString = string.Empty;
-            bool validUser = userService.Authenticate(login);
-            if (validUser)
-            {
-                tokenString = userService.BuildJWTToken();
-            }
-            else
-            {
+            var response = userService.Login(login);
+            if (!response.Success)
                 return Unauthorized();
-            }
-            return Ok(new { Token = tokenString });
+            return Ok(response);
         }
+
 
         [AllowAnonymous]
         [HttpPost("signup")]
@@ -49,7 +37,7 @@ namespace Armut.CaseStudy.Controllers
         {
             if (singup == null) return NotFound();
 
-            return Ok(userService.Singup(singup));
+            return Ok(userService.Signup(singup));
         }
 
 

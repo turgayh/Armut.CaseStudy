@@ -7,7 +7,8 @@ namespace Armut.CaseStudy.Operation.UserServices
     {
         public ServiceResponse<User> CreateUser(string id, string username);
         public bool Authenticate(LoginModel login);
-        public ServiceResponse<User> Singup(SingupModel singup);
+        public ServiceResponse<string> Login(LoginModel login);
+        public ServiceResponse<User> Signup(SingupModel singup);
         public string BuildJWTToken();
 
     }

@@ -1,11 +1,9 @@
 ﻿using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Operation.Helper;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Armut.CaseStudy.Operation.UserServices
@@ -53,12 +51,18 @@ namespace Armut.CaseStudy.Operation.UserServices
         {
             bool validUser = false;
 
-            if (login.Username == "hakan" && login.Password == "1234")
+            SingupModel user = userContext.Find(user => user.Username == login.Username).FirstOrDefault();
+            if (user == null) return false;
+            bool validPass = BCrypt.Net.BCrypt.Verify(login.Password, user.Password);
+            if (login.Username == user.Username && validPass)
             {
                 validUser = true;
             }
             return validUser;
         }
+
+
+
 
         public ServiceResponse<User> CreateUser(string id, string username)
         {
@@ -71,7 +75,7 @@ namespace Armut.CaseStudy.Operation.UserServices
             return response;
         }
 
-        public ServiceResponse<User> Singup(SingupModel singup)
+        public ServiceResponse<User> Signup(SingupModel singup)
         {
             //   bool verified = BCrypt.Net.BCrypt.Verify("Pa$$w0rd", passwordHash);
             ServiceResponse<User> response = new ServiceResponse<User>();
@@ -79,6 +83,26 @@ namespace Armut.CaseStudy.Operation.UserServices
             userContext.InsertOne(singup);
             SingupModel user = userContext.Find<SingupModel>(user => user.Username == singup.Username).FirstOrDefault();
             return CreateUser(user.UserId, user.Username);
+        }
+
+
+        public ServiceResponse<string> Login(LoginModel login)
+        {
+            string tokenString = string.Empty;
+            bool validUser = Authenticate(login);
+            ServiceResponse<string> response = new ServiceResponse<string>();
+            if (validUser)
+            {
+                tokenString = BuildJWTToken();
+            }
+            else
+            {
+                response.Success = false;
+                response.Data = "INVALID USER";
+                return response;
+            }
+            response.Data = tokenString;
+            return response;
         }
     }
 }
