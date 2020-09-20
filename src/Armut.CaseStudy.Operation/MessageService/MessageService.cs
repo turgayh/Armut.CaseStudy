@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Model.Dtos;
 using Armut.CaseStudy.Operation.Helper;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using MongoDB.Driver;
 
 namespace Armut.CaseStudy.Operation.MessageService
@@ -42,13 +44,37 @@ namespace Armut.CaseStudy.Operation.MessageService
             return response;
         }
 
+        public ServiceResponse<List<SendMessage>> ListMessages(string userId, string checkUserId , DateTime startTime, DateTime endTime)
+        {
+            ServiceResponse<List<SendMessage>> response = new ServiceResponse<List<SendMessage>>();
+
+            try
+            {
+                var messagesContext = _context.MessageContext();
+                List<SendMessage> totalMessage = new List<SendMessage>();
+                var sendMessages = 
+                    messagesContext.Find(msg => msg.SenderId == userId).FirstOrDefault().Messages.Where(val => val.RecieveId == checkUserId && val.TimeStamp <= endTime && startTime <= val.TimeStamp).ToList();
+                var receiveMessages =
+                    messagesContext.Find(msg => msg.SenderId == checkUserId).FirstOrDefault().Messages.Where(val => val.RecieveId == userId && val.TimeStamp <= endTime && startTime <= val.TimeStamp).ToList();
+                receiveMessages.ForEach(val => totalMessage.Add(val));
+                sendMessages.ForEach(val => totalMessage.Add(val));
+
+                totalMessage = totalMessage.OrderByDescending(val => val.TimeStamp).ToList();
+                response.Content = totalMessage;
+                return response;
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err, "Message-ListMessages throw error {date}", DateTime.UtcNow);
+                throw;
+            }
+        }
+
         public ServiceResponse<string> SendMessage(SendMessage message)
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
             SendMessageDto sendMessageDto = new SendMessageDto();
-            var userBlockedResponse = IsBlockedUser(message.SenderId, message.RecieveId);
-            if (!userBlockedResponse.Success) return userBlockedResponse;
-            
+
             try
             {
                 var messageContext = _context.MessageContext();
