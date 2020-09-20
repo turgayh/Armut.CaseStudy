@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "a4199902-ebb2-4b34-b2f9-38376065a616",
+		"name": "Armut",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User-Services",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Username\":\"test\",\r\n    \"Password\":\"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-http}}/user/login",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Singup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorizatio",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"test\",\r\n    \"password\":\"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-http}}/user/signup",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"user",
+								"signup"
+							]
+						},
+						"description": "Singup with username, password, and name"
+					},
+					"response": []
+				},
+				{
+					"name": "Blocked User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Username\":\"test\",\r\n    \"BlockedUser\":\"test2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-http}}/user/block-user",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"user",
+								"block-user"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "User information management and check user info ",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Message-Service",
+			"item": [
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"senderUsername\" : \"test\",\r\n    \"receiveUsername\" : \"test1\",\r\n    \"message\" : \"backend test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-http}}/message/send-message",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"message",
+								"send-message"
+							]
+						},
+						"description": "send message by recevier userId"
+					},
+					"response": []
+				},
+				{
+					"name": "List Messages",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"test\",\r\n    \"checkUser\":\"test1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-http}}/message/list-messages",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"message",
+								"list-messages"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "checkUser",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "starttime",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Chat messages management services",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Check App Runnning",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host-http}}/HealthCheck",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"HealthCheck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check App Running With JWT token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host-http}}/HealthCheck/auth",
+							"host": [
+								"{{host-http}}"
+							],
+							"path": [
+								"HealthCheck",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDA2MDk2NjIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzQxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNDEifQ.gDFU4dH0E225x96InJyzkHRiJmlGcZ6TRRrJORBF3QE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "141569d3-bb38-40fc-a492-8be8fb642b6f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9ed51d48-9837-4b88-89e7-5eff23f3e469",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "79949dc5-0541-494e-b6d7-b0a79745c150",
+			"key": "host-http",
+			"value": "http://localhost:{{port}}/api"
+		},
+		{
+			"id": "13558c9f-d899-4694-b3c8-3eddbc3831ef",
+			"key": "port",
+			"value": "5000"
+		},
+		{
+			"id": "5dd4a72b-a3eb-456e-a766-ad93692dcfec",
+			"key": "host-https",
+			"value": "https://localhost:5001/api"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
