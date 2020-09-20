@@ -5,7 +5,7 @@
 git clone https://github.com/turgayh/Armut.CaseStudy.git
 cd Armut.CaseStudy
 docker-compose up -d
-```bash
+```
 
 ## Indices
 
