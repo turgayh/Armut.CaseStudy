@@ -11,8 +11,7 @@ namespace Armut.CaseStudy.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    // [Authorize]
-    // [ValidateAntiForgeryToken]
+    [Authorize]
     public class MessageController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -28,10 +27,10 @@ namespace Armut.CaseStudy.Controllers
 
 
         [HttpPost("send-message")]
-        public IActionResult SendMessage([FromBody] string senderUsername, string receiveUsername, string message)
+        public IActionResult SendMessage([FromBody] SendMessageRequest req)
         {
-            var senderCheck = _userService.GetUserIdByUsername(senderUsername);
-            var recieverCheck = _userService.GetUserIdByUsername(receiveUsername);
+            var senderCheck = _userService.GetUserIdByUsername(req.SenderUsername);
+            var recieverCheck = _userService.GetUserIdByUsername(req.ReceiveUsername);
 
             if (!senderCheck.Success)
                 return Ok(senderCheck);
@@ -42,8 +41,8 @@ namespace Armut.CaseStudy.Controllers
             SendMessage sendMessage = new SendMessage();
             sendMessage.SenderId = senderCheck.Data;
             sendMessage.RecieveId = senderCheck.Data;
-            sendMessage.Message = message;
-            return Ok();
+            sendMessage.Message = req.Message;
+            return Ok(_messageService.SendMessage(sendMessage));
         }
 
 

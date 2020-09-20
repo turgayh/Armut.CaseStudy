@@ -1,5 +1,5 @@
 # Armut.CaseStudy
- 
+# windows_amd64.exe build -i Armut.postman_collection.json -o ./index.md -m
 
 # Armut
 

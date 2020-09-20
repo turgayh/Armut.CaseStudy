@@ -3,6 +3,7 @@ using Armut.CaseStudy.Operation.Helper;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -14,7 +15,6 @@ namespace Armut.CaseStudy.Operation.UserServices
         private readonly ILogger<UserService> _logger;
         private readonly IContext _context;
         private IJwtToken _jwtToken;
-        //public IDatabaseSettings Settings { get; }
 
         public UserService(IJwtToken jwtToken, ILogger<UserService> logger, IContext context)
         {
@@ -178,5 +178,11 @@ namespace Armut.CaseStudy.Operation.UserServices
             return response;
         }
 
+        public ServiceResponse<string> UserAddToBlockedList(string username)
+        {
+            var userContext = _context.UserContext();
+            userContext.Find(user => )
+            throw new NotImplementedException();
+        }
     }
 }

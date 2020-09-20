@@ -2,6 +2,7 @@
 
 using System;
 using Armut.CaseStudy.Model;
+using Armut.CaseStudy.Model.Dtos;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
@@ -49,13 +50,13 @@ namespace Armut.CaseStudy.Operation.Helper
             }
         }
 
-        public IMongoCollection<SendMessage> MessageContext()
+        public IMongoCollection<SendMessageDto> MessageContext()
         {
             try
             {
                 var client = new MongoClient(settings.ConnectionString);
                 var database = client.GetDatabase(settings.DatabaseName);
-                return database.GetCollection<SendMessage>(settings.MessageCollectionName);
+                return database.GetCollection<SendMessageDto>(settings.MessageCollectionName);
             }
             catch (Exception err)
             {
@@ -69,7 +70,7 @@ namespace Armut.CaseStudy.Operation.Helper
     {
         IMongoCollection<SingupModel> UserContext();
         IMongoCollection<User> UserInfoContext();
-        IMongoCollection<SendMessage> MessageContext();
+        IMongoCollection<SendMessageDto> MessageContext();
 
     }
 }

@@ -11,9 +11,7 @@ namespace Armut.CaseStudy.Operation.UserServices
         public ServiceResponse<User> Signup(SingupModel singup);
         public ServiceResponse<string> GetUserIdByUsername(string username);
         public ServiceResponse<string> CheckUsername(string username);
-
-
-
+        public ServiceResponse<string> UserAddToBlockedList(string username);
 
     }
 }
