@@ -7,21 +7,27 @@
 
 ## Indices
 
-* [Ungrouped](#ungrouped)
+* [Message-Service](#message-service)
 
-  * [Login](#1-login)
+  * [List Messages](#1-list-messages)
   * [Send Message](#2-send-message)
+
+* [User-Services](#user-services)
+
+  * [Blocked User](#1-blocked-user)
+  * [Login](#2-login)
   * [Singup](#3-singup)
 
 
 --------
 
 
-## Ungrouped
+## Message-Service
+Chat messages management services
 
 
 
-### 1. Login
+### 1. List Messages
 
 
 
@@ -30,7 +36,7 @@
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:44373/api/user
+URL: https://localhost:5001/api/message/list-messages
 ```
 
 
@@ -39,8 +45,10 @@ URL: https://localhost:44373/api/user
 
 ```js        
 {
-    "Username" : "hakan",
-    "Password"  : "1234"
+    "username":"test1",
+    "checkUser":"test2",
+    "startTime": "",
+    "endTime":""
 }
 ```
 
@@ -57,7 +65,7 @@ send message by recevier userId
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:5001/api/user/message/send-message
+URL: https://localhost:5001/api/message/send-message
 ```
 
 
@@ -66,8 +74,64 @@ URL: https://localhost:5001/api/user/message/send-message
 
 ```js        
 {
-    "username" : "hakan",
-    "message" : "hello"
+    "senderUsername" : "test1",
+    "receiveUsername" : "test2",
+    "message" : "hello world22"
+}
+```
+
+
+
+## User-Services
+User information management and check user info 
+
+
+
+### 1. Blocked User
+
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: https://localhost:5001/api/user/block-user
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "Username":"test2",
+    "BlockedUser":"test3"
+}
+```
+
+
+
+### 2. Login
+
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: https://localhost:5001/api/user/login
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "Username":"test1",
+    "Password":"12345"
 }
 ```
 
@@ -93,13 +157,22 @@ URL: https://localhost:5001/api/user/signup
 
 ```js        
 {
-    "username":"hakan5",
+    "username":"test2",
     "password":"12345"
 }
 ```
 
 
 
+***Available Variables:***
+
+| Key | Value | Type |
+| --- | ------|-------------|
+| host | https://localhost:{{port}}/api |  |
+| port | 5001 |  |
+
+
+
 ---
 [Back to top](#armut)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-09-20 13:45:01 by [docgen](https://github.com/thedevsaddam/docgen)
+
