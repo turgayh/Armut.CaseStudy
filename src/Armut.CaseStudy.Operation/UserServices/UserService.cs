@@ -16,26 +16,23 @@ namespace Armut.CaseStudy.Operation.UserServices
         private readonly string Audience;
         private readonly string Issuer;
         private readonly string SecretKey;
-        private readonly IMongoCollection<SingupModel> userContext;
-        private readonly IMongoCollection<User> userInfoContext;
         private readonly ILogger<UserService> _logger;
+        private readonly IContext _context;
 
         public IJwtToken JwtToken { get; }
         public IDatabaseSettings Settings { get; }
 
-        public UserService(IJwtToken jwtToken, IDatabaseSettings settings, ILogger<UserService> logger)
+        public UserService(IJwtToken jwtToken, ILogger<UserService> logger, IContext context)
         {
             TokenExpiry = jwtToken.TokenExpiry;
             Audience = jwtToken.Audience;
             Issuer = jwtToken.Issuer;
             SecretKey = jwtToken.SecretKey;
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-            userContext = database.GetCollection<SingupModel>(settings.UsersCollectionName);
-            userInfoContext = database.GetCollection<User>(settings.UserInfoCollectionName);
             JwtToken = jwtToken;
-            Settings = settings;
             _logger = logger;
+            _context = context;
+
+
         }
 
         public string BuildJWTToken()
@@ -57,7 +54,7 @@ namespace Armut.CaseStudy.Operation.UserServices
         public bool Authenticate(LoginModel login)
         {
             bool validUser = false;
-
+            var userContext = _context.UserContext();
             SingupModel user = userContext.Find(user => user.Username == login.Username).FirstOrDefault();
             if (user == null)
             {
@@ -83,6 +80,7 @@ namespace Armut.CaseStudy.Operation.UserServices
         {
             _logger.LogInformation("Userservice-CreateUser create new user");
             User user = new User();
+            var userInfoContext = _context.UserInfoContext();
             ServiceResponse<User> response = new ServiceResponse<User>();
             try
             {
@@ -101,8 +99,10 @@ namespace Armut.CaseStudy.Operation.UserServices
 
         public ServiceResponse<User> Signup(SingupModel singup)
         {
+
             _logger.LogInformation("Userservice-Signup registir user");
             SingupModel user;
+            var userContext = _context.UserContext();
             try
             {
                 ServiceResponse<User> response = new ServiceResponse<User>();
@@ -141,13 +141,16 @@ namespace Armut.CaseStudy.Operation.UserServices
         public ServiceResponse<string> GetUserIdByUsername(string username)
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
+            SingupModel user = new SingupModel();
+            var userContext = _context.UserContext();
+
             try
             {
-                User user = userInfoContext.Find(user => user.Username == username).FirstOrDefault();
+                user = userContext.Find(user => user.Username == username).FirstOrDefault();
                 if (user == null)
                 {
                     response.Success = false;
-                    response.Data = "INVALID USERNAME";
+                    response.ErrorMessage = "INVALID USERNAME";
                     return response;
                 }
                 response.Data = user.UserId;
@@ -160,5 +163,32 @@ namespace Armut.CaseStudy.Operation.UserServices
             }
             return response;
         }
+
+        public ServiceResponse<string> CheckUsername(string username)
+        {
+            ServiceResponse<string> response = new ServiceResponse<string>();
+            SingupModel user = new SingupModel();
+            var userContext = _context.UserContext();
+
+            try
+            {
+                user = userContext.Find(user => user.Username == username).FirstOrDefault();
+                if (user != null)
+                {
+                    response.Success = true;
+                    response.Data = "Username is already exits";
+                    return response;
+                }
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err.Message, "Userservice-CheckUsername throw error");
+                throw;
+            }
+            response.Success = false;
+            response.ErrorMessage = "Username is not found";
+            return response;
+        }
+
     }
 }

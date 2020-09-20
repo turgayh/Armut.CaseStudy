@@ -12,7 +12,7 @@ namespace Armut.CaseStudy.Operation.MessageService
             _logger = logger;
         }
 
-        public ServiceResponse<string> SendMessage()
+        public ServiceResponse<string> SendMessage(SendMessage message)
         {
             throw new System.NotImplementedException();
         }

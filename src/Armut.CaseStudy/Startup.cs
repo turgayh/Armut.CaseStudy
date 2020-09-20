@@ -43,6 +43,7 @@ namespace Armut.CaseStudy
 
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IMessageService, MessageService>();
+            services.AddSingleton<IContext, Context>();
 
 
             ///JWT auth settings

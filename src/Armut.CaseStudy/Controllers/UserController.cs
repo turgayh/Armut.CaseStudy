@@ -38,13 +38,14 @@ namespace Armut.CaseStudy.Controllers
 
         [AllowAnonymous]
         [HttpPost("signup")]
-        public IActionResult Signup([FromBody] SingupModel singup)
+        public IActionResult Signup([FromBody] SingupModel signup)
         {
             _logger.LogInformation("UserController-Signup Index executed at {date}", DateTime.UtcNow);
 
-            if (singup == null) return NotFound();
-
-            return Ok(_userService.Signup(singup));
+            if (signup == null) return NotFound();
+            ServiceResponse<string> userCheck = _userService.CheckUsername(signup.Username);
+            if (userCheck.Success) return Ok(userCheck);
+            return Ok(_userService.Signup(signup));
         }
 
 
