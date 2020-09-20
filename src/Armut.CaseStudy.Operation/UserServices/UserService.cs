@@ -2,11 +2,13 @@
 using Armut.CaseStudy.Operation.Helper;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Armut.CaseStudy.Operation.UserServices
 {
@@ -46,7 +48,7 @@ namespace Armut.CaseStudy.Operation.UserServices
             SingupModel user = userContext.Find(user => user.Username == login.Username).FirstOrDefault();
             if (user == null)
             {
-                _logger.LogInformation("Userservice-Authenticate invalid username");
+                _logger.LogInformation("Userservice-Authenticate invalid username {date}", DateTime.Now);
                 return false;
             };
             bool validPass = BCrypt.Net.BCrypt.Verify(login.Password, user.Password);
@@ -56,7 +58,7 @@ namespace Armut.CaseStudy.Operation.UserServices
             }
             else
             {
-                _logger.LogCritical("Userservice-Authenticate invalid password");
+                _logger.LogCritical("Userservice-Authenticate invalid password {date}", DateTime.Now);
             }
             return validUser;
         }
@@ -74,12 +76,12 @@ namespace Armut.CaseStudy.Operation.UserServices
             {
                 user.UserId = id;
                 user.Username = username;
-                response.Data = user;
+                response.Content = user;
                 userInfoContext.InsertOne(user);
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Userservice-CreateUser error");
+                _logger.LogError(err, "Userservice-CreateUser throw error {date}", DateTime.Now);
                 throw;
             }
             return response;
@@ -100,7 +102,7 @@ namespace Armut.CaseStudy.Operation.UserServices
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Userservice-Signup error");
+                _logger.LogError(err, "Userservice-Signup throw error {date}", DateTime.Now);
                 throw;
             }
             return CreateUser(user.UserId, user.Username);
@@ -119,10 +121,10 @@ namespace Armut.CaseStudy.Operation.UserServices
             else
             {
                 response.Success = false;
-                response.Data = "INVALID USER";
+                response.Content = "INVALID USER";
                 return response;
             }
-            response.Data = tokenString;
+            response.Content = tokenString;
             return response;
         }
 
@@ -141,12 +143,12 @@ namespace Armut.CaseStudy.Operation.UserServices
                     response.ErrorMessage = "INVALID USERNAME";
                     return response;
                 }
-                response.Data = user.UserId;
+                response.Content = user.UserId;
 
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Userservice-GetUserIdByUsername throw error");
+                _logger.LogError(err, "Userservice-GetUserIdByUsername throw error {date}", DateTime.Now);
                 throw;
             }
             return response;
@@ -164,13 +166,13 @@ namespace Armut.CaseStudy.Operation.UserServices
                 if (user != null)
                 {
                     response.Success = true;
-                    response.Data = "Username is already exits";
+                    response.Content = "Username is already exits";
                     return response;
                 }
             }
             catch (Exception err)
             {
-                _logger.LogError(err.Message, "Userservice-CheckUsername throw error");
+                _logger.LogError(err.Message, "Userservice-CheckUsername throw error {date}", DateTime.Now);
                 throw;
             }
             response.Success = false;
@@ -178,11 +180,24 @@ namespace Armut.CaseStudy.Operation.UserServices
             return response;
         }
 
-        public ServiceResponse<string> UserAddToBlockedList(string username)
+        public  ServiceResponse<string> UserAddToBlockedList(string Username, string BlockedUser)
         {
-            var userContext = _context.UserContext();
-            userContext.Find(user => )
-            throw new NotImplementedException();
+            ServiceResponse<string> response = new ServiceResponse<string>();
+            try
+            {
+                var userInfoContext = _context.UserInfoContext();
+                var user =  userInfoContext.Find(user => user.Username == Username).First();
+                string blockUserId = userInfoContext.Find(user => user.Username == BlockedUser).First().UserId;
+                user.BlockedList.Add(blockUserId);
+                var result = userInfoContext.ReplaceOne(user => user.Username == Username, user);
+                response.Content = BlockedUser + " added blocked list" ;
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err, "Userservice-UserAddToBlockedList throw error {date}", DateTime.Now);
+                throw;
+            }
+            return response;
         }
     }
 }

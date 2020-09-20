@@ -5,6 +5,7 @@ namespace Armut.CaseStudy.Operation.MessageService
 {
     public interface IMessageService
     {
-        public ServiceResponse<ReplaceOneResult> SendMessage(SendMessage message);
+        public ServiceResponse<string> SendMessage(SendMessage message);
+        public ServiceResponse<string> IsBlockedUser(string userId, string checkUserId);
     }
 }

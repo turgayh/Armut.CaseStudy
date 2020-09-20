@@ -1,10 +1,12 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
 namespace Armut.CaseStudy.Model
 {
+    [BsonIgnoreExtraElements]
     public class User : UserBase
     {
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Operation.UserServices;
 using Microsoft.AspNetCore.Authorization;
@@ -48,6 +49,16 @@ namespace Armut.CaseStudy.Controllers
             return Ok(_userService.Signup(signup));
         }
 
+
+
+        [Authorize]
+        [HttpPost("block-user")]
+        public IActionResult BlockUser([FromBody] BlockUserModel request)
+        {
+            _logger.LogInformation("UserController-BlockUser Index executed at {date}", DateTime.UtcNow);
+            if (request.Username == null || request.BlockedUser == null) return BadRequest();
+            return Ok(_userService.UserAddToBlockedList(request.Username, request.BlockedUser));
+        }
 
 
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Armut.CaseStudy.Model;
 using Armut.CaseStudy.Model.Dtos;
@@ -19,11 +20,35 @@ namespace Armut.CaseStudy.Operation.MessageService
             _context = context;
         }
 
-        public ServiceResponse<ReplaceOneResult> SendMessage(SendMessage message)
+        public ServiceResponse<string> IsBlockedUser(string userId,string checkUserId)
         {
-            ServiceResponse<ReplaceOneResult> response = new ServiceResponse<ReplaceOneResult>();
-            SendMessageDto sendMessageDto = new SendMessageDto();
+            ServiceResponse<string> response = new ServiceResponse<string>();
+            try
+            {
+                var userInfoContext = _context.UserInfoContext();
+                User user = userInfoContext.Find(user => user.UserId == userId).First();
+                if(user.BlockedList.Contains(checkUserId))
+                {
+                    response.Success = false;
+                    response.ErrorMessage = "You are blocked by " + user.Username;
+                    return response;
+                }
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err, "Message-IsBlockedUser throw error {date}", DateTime.UtcNow);
+                throw;
+            }
+            return response;
+        }
 
+        public ServiceResponse<string> SendMessage(SendMessage message)
+        {
+            ServiceResponse<string> response = new ServiceResponse<string>();
+            SendMessageDto sendMessageDto = new SendMessageDto();
+            var userBlockedResponse = IsBlockedUser(message.SenderId, message.RecieveId);
+            if (!userBlockedResponse.Success) return userBlockedResponse;
+            
             try
             {
                 var messageContext = _context.MessageContext();
@@ -38,11 +63,11 @@ namespace Armut.CaseStudy.Operation.MessageService
                 data.Messages.Add(message);
                 data.SenderId = message.SenderId;
                 var result = messageContext.ReplaceOne(user => user.SenderId == message.SenderId, data);
-                response.Data = result;
+                response.Content = "Message send successfully";
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Message-SendMessage throw error");
+                _logger.LogError(err, "Message-SendMessage throw error {date}", DateTime.UtcNow);
                 throw;
             }
             return response;

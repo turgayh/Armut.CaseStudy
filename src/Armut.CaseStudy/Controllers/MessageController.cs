@@ -39,8 +39,8 @@ namespace Armut.CaseStudy.Controllers
                 return Ok(recieverCheck);
 
             SendMessage sendMessage = new SendMessage();
-            sendMessage.SenderId = senderCheck.Data;
-            sendMessage.RecieveId = senderCheck.Data;
+            sendMessage.SenderId = senderCheck.Content;
+            sendMessage.RecieveId = recieverCheck.Content;
             sendMessage.Message = req.Message;
             return Ok(_messageService.SendMessage(sendMessage));
         }
