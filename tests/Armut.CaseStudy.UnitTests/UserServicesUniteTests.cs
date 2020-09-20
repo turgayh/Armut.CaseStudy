@@ -11,7 +11,6 @@ namespace Armut.CaseStudy.UnitTests
         {
 
         }
-        [Theory]
         public void UserService_Login_InvalidParameter_ReturnAuothorized()
         {
             //Act

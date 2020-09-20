@@ -87,7 +87,6 @@ namespace Armut.CaseStudy
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

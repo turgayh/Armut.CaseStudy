@@ -21,4 +21,4 @@ RUN dotnet publish "Armut.CaseStudy.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Armut.CaseStudy.dll"]
+ENTRYPOINT ["dotnet", "Armut.CaseStudy.dll"] 

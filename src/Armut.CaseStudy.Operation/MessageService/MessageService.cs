@@ -22,14 +22,14 @@ namespace Armut.CaseStudy.Operation.MessageService
             _context = context;
         }
 
-        public ServiceResponse<string> IsBlockedUser(string userId,string checkUserId)
+        public ServiceResponse<string> IsBlockedUser(string userId, string checkUserId)
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
             try
             {
                 var userInfoContext = _context.UserInfoContext();
                 User user = userInfoContext.Find(user => user.UserId == userId).First();
-                if(user.BlockedList.Contains(checkUserId))
+                if (user.BlockedList.Contains(checkUserId))
                 {
                     response.Success = false;
                     response.ErrorMessage = "You are blocked by " + user.Username;
@@ -44,7 +44,7 @@ namespace Armut.CaseStudy.Operation.MessageService
             return response;
         }
 
-        public ServiceResponse<List<SendMessage>> ListMessages(string userId, string checkUserId , DateTime startTime, DateTime endTime)
+        public ServiceResponse<List<SendMessage>> ListMessages(string userId, string checkUserId, DateTime startTime, DateTime endTime)
         {
             ServiceResponse<List<SendMessage>> response = new ServiceResponse<List<SendMessage>>();
 
@@ -52,10 +52,22 @@ namespace Armut.CaseStudy.Operation.MessageService
             {
                 var messagesContext = _context.MessageContext();
                 List<SendMessage> totalMessage = new List<SendMessage>();
-                var sendMessages = 
-                    messagesContext.Find(msg => msg.SenderId == userId).FirstOrDefault().Messages.Where(val => val.RecieveId == checkUserId && val.TimeStamp <= endTime && startTime <= val.TimeStamp).ToList();
-                var receiveMessages =
-                    messagesContext.Find(msg => msg.SenderId == checkUserId).FirstOrDefault().Messages.Where(val => val.RecieveId == userId && val.TimeStamp <= endTime && startTime <= val.TimeStamp).ToList();
+                List<SendMessage> sendMessages = new List<SendMessage>();
+                List<SendMessage> receiveMessages = new List<SendMessage>();
+
+                var userSendBox = messagesContext.Find(msg => msg.SenderId == userId).FirstOrDefault();
+                var checkUserSendBox = messagesContext.Find(msg => msg.SenderId == checkUserId).FirstOrDefault();
+
+                if (userSendBox != null)
+                {
+                    sendMessages =
+                       userSendBox.Messages.Where(val => val.RecieveId == checkUserId && val.TimeStamp <= endTime && startTime <= val.TimeStamp).ToList();
+                }
+                if (checkUserSendBox != null)
+                {
+                    receiveMessages =
+                       checkUserSendBox.Messages.Where(val => val.RecieveId == userId && val.TimeStamp <= endTime && startTime <= val.TimeStamp).ToList();
+                }
                 receiveMessages.ForEach(val => totalMessage.Add(val));
                 sendMessages.ForEach(val => totalMessage.Add(val));
 

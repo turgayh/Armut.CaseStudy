@@ -1,11 +1,11 @@
-# Armut.CaseStudy
-# windows_amd64.exe build -i Armut.postman_collection.json -o ./index.md -m
-
 # Armut
 
-
-
 ## Indices
+
+* [Health Check](#health-check)
+
+  * [Check App Running With JWT token](#1-check-app-running-with-jwt-token)
+  * [Check App Runnning](#2-check-app-runnning)
 
 * [Message-Service](#message-service)
 
@@ -22,6 +22,38 @@
 --------
 
 
+## Health Check
+
+
+
+### 1. Check App Running With JWT token
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: 
+URL: http://localhost:5000/api/HealthCheck/auth
+```
+
+
+
+### 2. Check App Runnning
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: 
+URL: http://localhost:5000/api/HealthCheck
+```
+
+
+
 ## Message-Service
 Chat messages management services
 
@@ -36,7 +68,7 @@ Chat messages management services
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:5001/api/message/list-messages
+URL: http://localhost:5000/api/message/list-messages
 ```
 
 
@@ -45,10 +77,8 @@ URL: https://localhost:5001/api/message/list-messages
 
 ```js        
 {
-    "username":"test1",
-    "checkUser":"test2",
-    "startTime": "",
-    "endTime":""
+    "username":"test",
+    "checkUser":"test1"
 }
 ```
 
@@ -65,7 +95,7 @@ send message by recevier userId
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:5001/api/message/send-message
+URL: http://localhost:5000/api/message/send-message
 ```
 
 
@@ -74,9 +104,9 @@ URL: https://localhost:5001/api/message/send-message
 
 ```js        
 {
-    "senderUsername" : "test1",
-    "receiveUsername" : "test2",
-    "message" : "hello world22"
+    "senderUsername" : "test",
+    "receiveUsername" : "test1",
+    "message" : "backend test"
 }
 ```
 
@@ -96,7 +126,7 @@ User information management and check user info
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:5001/api/user/block-user
+URL: http://localhost:5000/api/user/block-user
 ```
 
 
@@ -105,8 +135,8 @@ URL: https://localhost:5001/api/user/block-user
 
 ```js        
 {
-    "Username":"test2",
-    "BlockedUser":"test3"
+    "Username":"test",
+    "BlockedUser":"test2"
 }
 ```
 
@@ -121,7 +151,7 @@ URL: https://localhost:5001/api/user/block-user
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:5001/api/user/login
+URL: http://localhost:5000/api/user/login
 ```
 
 
@@ -130,7 +160,7 @@ URL: https://localhost:5001/api/user/login
 
 ```js        
 {
-    "Username":"test1",
+    "Username":"test",
     "Password":"12345"
 }
 ```
@@ -148,7 +178,7 @@ Singup with username, password, and name
 ```bash
 Method: POST
 Type: RAW
-URL: https://localhost:5001/api/user/signup
+URL: http://localhost:5000/api/user/signup
 ```
 
 
@@ -157,7 +187,7 @@ URL: https://localhost:5001/api/user/signup
 
 ```js        
 {
-    "username":"test2",
+    "username":"test",
     "password":"12345"
 }
 ```
@@ -168,8 +198,9 @@ URL: https://localhost:5001/api/user/signup
 
 | Key | Value | Type |
 | --- | ------|-------------|
-| host | https://localhost:{{port}}/api |  |
-| port | 5001 |  |
+| host-http | http://localhost:{{port}}/api |  |
+| port | 5000 |  |
+| host-https | https://localhost:5001/api |  |
 
 
 
