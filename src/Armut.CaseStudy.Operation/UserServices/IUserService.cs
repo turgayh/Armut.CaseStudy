@@ -12,7 +12,6 @@ namespace Armut.CaseStudy.Operation.UserServices
         public ServiceResponse<string> GetUserIdByUsername(string username);
         public ServiceResponse<string> CheckUsername(string username);
 
-        public string BuildJWTToken();
 
 
 

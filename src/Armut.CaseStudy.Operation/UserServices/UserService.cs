@@ -11,37 +11,25 @@ namespace Armut.CaseStudy.Operation.UserServices
 {
     public class UserService : IUserService
     {
-
-        private readonly string TokenExpiry;
-        private readonly string Audience;
-        private readonly string Issuer;
-        private readonly string SecretKey;
         private readonly ILogger<UserService> _logger;
         private readonly IContext _context;
-
-        public IJwtToken JwtToken { get; }
-        public IDatabaseSettings Settings { get; }
+        private IJwtToken _jwtToken;
+        //public IDatabaseSettings Settings { get; }
 
         public UserService(IJwtToken jwtToken, ILogger<UserService> logger, IContext context)
         {
-            TokenExpiry = jwtToken.TokenExpiry;
-            Audience = jwtToken.Audience;
-            Issuer = jwtToken.Issuer;
-            SecretKey = jwtToken.SecretKey;
-            JwtToken = jwtToken;
+            _jwtToken = jwtToken;
             _logger = logger;
             _context = context;
-
-
         }
 
-        public string BuildJWTToken()
+        private string BuildJWTToken()
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtToken.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var issuer = Issuer;
-            var audience = Audience;
-            var jwtValidity = DateTime.Now.AddMinutes(Convert.ToDouble(TokenExpiry));
+            var issuer = _jwtToken.Issuer;
+            var audience = _jwtToken.Audience;
+            var jwtValidity = DateTime.Now.AddMinutes(Convert.ToDouble(_jwtToken.TokenExpiry));
 
             var token = new JwtSecurityToken(issuer,
               audience,
