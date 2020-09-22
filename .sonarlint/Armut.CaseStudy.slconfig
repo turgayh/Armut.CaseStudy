@@ -1,0 +1,12 @@
+{
+  "ServerUri": "http://localhost:9000",
+  "Organization": null,
+  "ProjectKey": "armut",
+  "ProjectName": "armut",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AXS3K0E09DKsUm0_ymk1",
+      "ProfileTimestamp": "2020-09-22T18:54:59Z"
+    }
+  }
+}

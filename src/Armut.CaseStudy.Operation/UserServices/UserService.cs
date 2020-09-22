@@ -2,13 +2,10 @@
 using Armut.CaseStudy.Operation.Helper;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json.Linq;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Armut.CaseStudy.Operation.UserServices
 {
@@ -16,7 +13,7 @@ namespace Armut.CaseStudy.Operation.UserServices
     {
         private readonly ILogger<UserService> _logger;
         private readonly IContext _context;
-        private IJwtToken _jwtToken;
+        private readonly IJwtToken _jwtToken;
 
         public UserService(IJwtToken jwtToken, ILogger<UserService> logger, IContext context)
         {
@@ -131,7 +128,7 @@ namespace Armut.CaseStudy.Operation.UserServices
         public ServiceResponse<string> GetUserIdByUsername(string username)
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
-            SingupModel user = new SingupModel();
+            SingupModel user;
             var userContext = _context.UserContext();
 
             try
@@ -157,7 +154,7 @@ namespace Armut.CaseStudy.Operation.UserServices
         public ServiceResponse<string> CheckUsername(string username)
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
-            SingupModel user = new SingupModel();
+            SingupModel user;
             var userContext = _context.UserContext();
 
             try
